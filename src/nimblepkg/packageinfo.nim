@@ -24,6 +24,7 @@ type
     binDir*: string
     srcDir*: string
     backend*: string
+    unixBuildScript*: string
 
   Package* = object
     # Required fields in a package.
@@ -59,6 +60,7 @@ proc initPackageInfo(): PackageInfo =
   result.srcDir = ""
   result.binDir = ""
   result.backend = "c"
+  result.unixBuildScript = nil
 
 proc validatePackageInfo(pkgInfo: PackageInfo, path: string) =
   if pkgInfo.name == "":
@@ -171,6 +173,12 @@ proc readPackageInfo*(path: string): PackageInfo =
           of "requires":
             for v in ev.value.multiSplit:
               result.requires.add(parseRequires(v.strip))
+          else:
+            raise newException(NimbleError, "Invalid field: " & ev.key)
+        of "buildscript":
+          case ev.key.normalize
+          of "unix":
+            result.unixBuildScript = ev.value
           else:
             raise newException(NimbleError, "Invalid field: " & ev.key)
         else: raise newException(NimbleError,

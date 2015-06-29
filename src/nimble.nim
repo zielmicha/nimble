@@ -548,6 +548,13 @@ proc installFromDir(dir: string, latest: bool, options: Options,
   ## Will contain a list of files which have been installed.
   var filesInstalled: HashSet[string]
 
+  # Run build scripts
+  when defined(unix):
+    if pkgInfo.unixBuildScript != nil:
+      let exitCode = execShellCmd(pkgInfo.unixBuildScript)
+      if exitCode != 0:
+        raise newException(Exception, "build script returned " & $exitCode)
+
   createDir(pkgDestDir)
   if pkgInfo.bin.len > 0:
     createDir(binDir)
