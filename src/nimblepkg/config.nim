@@ -8,7 +8,7 @@ type
   Config* = object
     nimbleDir*: string
     chcp*: bool # Whether to change the code page in .cmd files on Win.
-    
+
 
 proc initConfig(): Config =
   if getNimrodVersion() > newVersion("0.9.6"):
@@ -20,7 +20,11 @@ proc initConfig(): Config =
 
 proc parseConfig*(): Config =
   result = initConfig()
-  var confFile = getConfigDir() / "nimble" / "nimble.ini"
+  var confDir = os.getEnv("NIMBLE_HOME")
+  if confDir == "":
+    confDir = getConfigDir() / "nimble"
+
+  var confFile = confDir / "nimble.ini"
 
   var f = newFileStream(confFile, fmRead)
   if f == nil:
@@ -29,7 +33,9 @@ proc parseConfig*(): Config =
     f = newFileStream(confFile, fmRead)
     if f != nil:
       echo("[Warning] Using deprecated config file at ", confFile)
-  
+
+  result.nimbleDir = confDir
+
   if f != nil:
     echo("Reading from config file at ", confFile)
     var p: CfgParser
