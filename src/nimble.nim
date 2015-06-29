@@ -947,7 +947,7 @@ proc doAction(options: Options) =
   of actionNil:
     assert false
 
-when isMainModule:
+proc main*() =
   when defined(release):
     try:
       parseCmdLine().doAction()
@@ -957,3 +957,6 @@ when isMainModule:
       removeDir(getNimbleTempDir())
   else:
     parseCmdLine().doAction()
+
+when isMainModule:
+  main()
