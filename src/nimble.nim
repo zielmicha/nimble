@@ -81,7 +81,7 @@ For more information read the Github readme:
 """
   nimbleVersion = "0.6.2"
   defaultPackageURL =
-      "https://github.com/nim-lang/packages/raw/master/packages.json"
+      "https://github.com/zielmicha/packages/raw/nimenv/packages.json"
 
 proc writeHelp() =
   echo(help)
